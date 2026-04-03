@@ -313,6 +313,17 @@ async def post_milestone(client, db, total_bytes):
     except Exception as e:
         print(f"❌ Failed to post milestone: {e}")
 
+async def short_redirect(request):
+    slug = request.match_info.get('slug')
+    from utils.database import db
+    data = db.get_short_link(slug)
+    if not data:
+        return web.Response(text="Error: Link not found or expired.", status=404)
+    
+    file_id, chat_id, msg_id = data
+    target_url = f"/download/{file_id}?chat={chat_id}&msg={msg_id}"
+    return web.HTTPFound(location=target_url)
+
 async def start_web_server(client):
     app = web.Application()
     app['client'] = client
@@ -328,17 +339,6 @@ async def start_web_server(client):
     app.router.add_get('/download/{file_id}', landing_page)
     app.router.add_get('/dl/{file_id}', media_streamer)
 
-async def short_redirect(request):
-    slug = request.match_info.get('slug')
-    from utils.database import db
-    data = db.get_short_link(slug)
-    if not data:
-        return web.Response(text="Error: Link not found or expired.", status=404)
-    
-    file_id, chat_id, msg_id = data
-    target_url = f"/download/{file_id}?chat={chat_id}&msg={msg_id}"
-    return web.HTTPFound(location=target_url)
-    
     runner = web.AppRunner(app)
     await runner.setup()
     
