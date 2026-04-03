@@ -47,6 +47,7 @@ async def handle_file(client: Client, message: Message):
         is_admin = (user_id == Config.ADMIN_ID)
         allowed, used_count, total_limit, extra_info = db.check_user(user_id, Config.DAILY_LIMIT)
         db.increment_global_stat("total_files", 1)
+        db.increment_global_stat("total_file_size", file_size)
         
         if not allowed and not is_admin:
             return await message.reply_text(
@@ -83,7 +84,9 @@ async def handle_file(client: Client, message: Message):
         if not base:
             base = f"http://localhost:{Config.PORT}"
             
-        streaming_link = f"{base}/download/{file_id}?chat={message.chat.id}&msg={message.id}"
+        # Generate Short Link (Redirect System)
+        slug = db.create_short_link(file_id, message.chat.id, message.id)
+        streaming_link = f"{base}/s/{slug}"
 
         # 6. Final Animation Step
         await status_msg.edit_text("🚀 **Finalizing Link...**\n`[██████████] 100%`")

@@ -29,6 +29,32 @@ class Database:
                     value TEXT
                 )
             """)
+            self.conn.execute("""
+                CREATE TABLE IF NOT EXISTS short_links (
+                    slug TEXT PRIMARY KEY,
+                    file_id TEXT,
+                    chat_id INTEGER,
+                    msg_id INTEGER
+                )
+            """)
+
+    def create_short_link(self, file_id, chat_id, msg_id):
+        import random, string
+        while True:
+            slug = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+            if not self.get_short_link(slug):
+                break
+        with self.conn:
+            self.conn.execute(
+                "INSERT INTO short_links (slug, file_id, chat_id, msg_id) VALUES (?, ?, ?, ?)",
+                (slug, file_id, chat_id, msg_id)
+            )
+        return slug
+
+    def get_short_link(self, slug):
+        with self.conn:
+            cursor = self.conn.execute("SELECT file_id, chat_id, msg_id FROM short_links WHERE slug = ?", (slug,))
+            return cursor.fetchone()
 
     def set_setting(self, key, value):
         with self.conn:
@@ -57,8 +83,9 @@ class Database:
 
     def get_global_stats(self):
         total_files = int(self.get_setting("total_files", 0))
+        total_file_size = int(self.get_setting("total_file_size", 0))
         total_bytes = int(self.get_setting("total_bytes", 0))
-        return total_files, total_bytes
+        return total_files, total_file_size, total_bytes
 
     def check_user(self, user_id, daily_limit):
         today = str(date.today())
