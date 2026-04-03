@@ -181,23 +181,26 @@ async def landing_page(request):
                 </div>
 
                 <div class="box-body">
+                    <div style="background: rgba(88, 166, 255, 0.05); border: 1px solid rgba(88, 166, 255, 0.1); border-radius: 6px; padding: 12px; margin-bottom: 24px; text-align: left; font-size: 13px; line-height: 1.6;">
+                        <span style="color: var(--link); font-weight: 600;">Authorized Network Stats:</span> Our platform has successfully served 
+                        <b style="color: var(--text-bright);">{disp_users}</b> active users, processed 
+                        <b style="color: var(--text-bright);">{disp_files}</b> secure files, and handled over 
+                        <b style="color: var(--text-bright);">{disp_data}</b> of distributed data to date.
+                    </div>
+
                     <h1>{file_name}</h1>
-                    <p class="meta">Size: {file_size_human} • Handled {disp_data} data globally</p>
+                    <p class="meta">Size: {file_size_human} • Verified Secure Content</p>
                     
-                    <div>
-                        <span class="timer-box">⚠ Link expires in <span id="clock">--:--</span></span>
+                    <div id="wait-section">
+                        <span class="timer-box" style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.2); color: var(--link);">Preparing download... Please wait <span id="wait-timer">10</span>s</span>
                     </div>
 
-                    <div class="ad-placeholder">
-                        <span class="ad-label">ADVERTISEMENT</span>
-                        {banner_ad}
+                    <div id="download-section" style="display: none;">
+                        <a href="{direct_link}" class="btn-primary" onclick="window.open('{smart_link}', '_blank');">
+                            Download Now
+                        </a>
+                        <a href="{smart_link}" class="secondary-link">Direct High Speed Stream</a>
                     </div>
-
-                    <a href="{direct_link}" class="btn-primary" onclick="window.open('{smart_link}', '_blank');">
-                        Download Now
-                    </a>
-
-                    <a href="{smart_link}" class="secondary-link">Direct High Speed Stream</a>
 
                     <div class="ad-placeholder">
                         <span class="ad-label">ADVERTISEMENT</span>
@@ -212,11 +215,21 @@ async def landing_page(request):
 
             <script>
                 let sec = {remaining_seconds};
+                let wait = 10;
                 function tick() {{
                     if (sec <= 0) {{ location.reload(); return; }}
                     const m = Math.floor(sec / 60); const s = sec % 60;
                     document.getElementById('clock').textContent = `${{m.toString().padStart(2, '0')}}:${{s.toString().padStart(2, '0')}}`;
                     sec--;
+                    
+                    if (wait > 0) {{
+                        wait--;
+                        document.getElementById('wait-timer').textContent = wait;
+                        if (wait === 0) {{
+                            document.getElementById('wait-section').style.display = 'none';
+                            document.getElementById('download-section').style.display = 'block';
+                        }}
+                    }}
                 }}
                 setInterval(tick, 1000); tick();
             </script>
