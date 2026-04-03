@@ -46,8 +46,6 @@ async def handle_file(client: Client, message: Message):
         # 2. Daily Limit Check
         is_admin = (user_id == Config.ADMIN_ID)
         allowed, used_count, total_limit, extra_info = db.check_user(user_id, Config.DAILY_LIMIT)
-        db.increment_global_stat("total_files", 1)
-        db.increment_global_stat("total_file_size", file_size)
         
         if not allowed and not is_admin:
             return await message.reply_text(
@@ -75,6 +73,10 @@ async def handle_file(client: Client, message: Message):
         file_id = media.file_id
         file_name = getattr(media, "file_name", "Media_File")
         file_size = getattr(media, "file_size", 0)
+        
+        # Track Global Statistics
+        db.increment_global_stat("total_files", 1)
+        db.increment_global_stat("total_file_size", file_size)
         
         # 5. Link Generation
         # IMPORTANT: We use the message.chat.id and message.id to ensure the stream server can find it.
