@@ -120,8 +120,7 @@ async def handle_file(client: Client, message: Message):
         await status_msg.edit_text(
             response_text,
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("📥 High Speed Download", url=streaming_link)],
-                [InlineKeyboardButton("🛠 Support", url=Config.SUPPORT_LINK), InlineKeyboardButton("👥 Refer Friends (+15)", callback_data="my_stats")]
+                [InlineKeyboardButton("📥 High Speed Download", url=streaming_link)]
             ])
         )
 
