@@ -29,10 +29,10 @@ async def landing_page(request):
         real_users, _ = db.get_admin_stats()
         from handlers.file_handler import humanbytes
         
-        # Professional "Booster" stats for authority
-        disp_users = f"{real_users + 124508:,}"
-        disp_files = f"{real_files + 980420:,}"
-        disp_data = humanbytes(real_bytes + (5.8 * 1024 * 1024 * 1024 * 1024))
+        # Adjusted Booster stats as requested
+        disp_users = f"{real_users + 50000:,}"
+        disp_files = f"{real_files + 150000:,}"
+        disp_data = humanbytes(real_bytes + (120 * 1024 * 1024 * 1024))
 
         # Get file info for the landing page
         message = await client.get_messages(int(chat_id), int(msg_id))
@@ -95,15 +95,6 @@ async def landing_page(request):
                     min-height: 100vh;
                     padding: 16px;
                 }}
-                .stats-discrete {{
-                    display: flex; gap: 12px; margin-bottom: 20px; font-size: 12px;
-                }}
-                .stat-tag {{ 
-                    background: #21262d; border: 1px solid var(--border); 
-                    padding: 4px 12px; border-radius: 6px; color: #8b949e;
-                    display: flex; align-items: center; gap: 6px;
-                }}
-
                 .box {{
                     width: 100%;
                     max-width: 550px;
@@ -134,8 +125,9 @@ async def landing_page(request):
                 .ad-placeholder {{
                     background: #0d1117; border: 1px dashed var(--border); border-radius: 6px;
                     padding: 12px; margin: 16px 0; min-height: 90px;
-                    position: relative;
+                    position: relative; overflow: hidden; max-width: 100%;
                 }}
+                .ad-placeholder img, .ad-placeholder iframe {{ max-width: 100% !important; }}
                 .ad-label {{ position: absolute; top: 4px; left: 8px; font-size: 9px; color: #484f58; }}
 
                 .btn-primary {{
@@ -163,17 +155,6 @@ async def landing_page(request):
             {interstitial_ad}
         </head>
         <body>
-            <div class="stats-discrete">
-                <div class="stat-tag">
-                    <svg height="12" width="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2 0-2.04 2.29-3.27 4.13-3.71l.15-.04c.15-.04.3-.06.45-.08.15-.02.3-.03.45-.03.15 0 .3.01.45.03.15.02.3.04.45.08l.15.04c1.84.44 4.13 1.67 4.13 3.71Z"></path></svg>
-                    {disp_users}
-                </div>
-                <div class="stat-tag">
-                    <svg height="12" width="12" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75V1.5h-8a1 1 0 0 0-1 1V13a1 1 0 0 0 1 1H7a.75.75 0 0 1 0 1.5H4.5A2.5 2.5 0 0 1 2 13V2.5Zm3.75 7a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Zm0-3a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Z"></path><path d="M5 11.75a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1-.75-.75Z"></path></svg>
-                    {disp_files}
-                </div>
-            </div>
-
             <div class="box">
                 <div class="box-header">
                     <svg height="16" width="16" viewBox="0 0 16 16" fill="#8b949e"><path d="M10.5 1.75v3.25h3.25l-3.25-3.25ZM9 1.75L15.25 8v5.25A1.75 1.75 0 0 1 13.5 15H2.5A1.75 1.75 0 0 1 .75 13.25V2.75C.75 1.784 1.534 1 2.5 1H9v.75ZM2.5 2.5a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h11a.25.25 0 0 0 .25-.25V8.5H9.75a.75.75 0 0 1-.75-.75V2.5H2.5Z"></path></svg>
@@ -182,10 +163,10 @@ async def landing_page(request):
 
                 <div class="box-body">
                     <div style="background: rgba(88, 166, 255, 0.05); border: 1px solid rgba(88, 166, 255, 0.1); border-radius: 6px; padding: 12px; margin-bottom: 24px; text-align: left; font-size: 13px; line-height: 1.6;">
-                        <span style="color: var(--link); font-weight: 600;">Authorized Network Stats:</span> Our platform has successfully served 
+                        <span style="color: var(--link); font-weight: 600;">Authorized Network Stats:</span> Our platform has served 
                         <b style="color: var(--text-bright);">{disp_users}</b> active users, processed 
-                        <b style="color: var(--text-bright);">{disp_files}</b> secure files, and handled over 
-                        <b style="color: var(--text-bright);">{disp_data}</b> of distributed data to date.
+                        <b style="color: var(--text-bright);">{disp_files}</b> secure files, and handled 
+                        <b style="color: var(--text-bright);">{disp_data}</b> of data globally.
                     </div>
 
                     <h1>{file_name}</h1>
@@ -218,8 +199,6 @@ async def landing_page(request):
                 let wait = 10;
                 function tick() {{
                     if (sec <= 0) {{ location.reload(); return; }}
-                    const m = Math.floor(sec / 60); const s = sec % 60;
-                    document.getElementById('clock').textContent = `${{m.toString().padStart(2, '0')}}:${{s.toString().padStart(2, '0')}}`;
                     sec--;
                     
                     if (wait > 0) {{
