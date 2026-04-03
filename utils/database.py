@@ -49,6 +49,17 @@ class Database:
                 return True
             return False
 
+    def increment_global_stat(self, key, amount=1):
+        with self.conn:
+            current = int(self.get_setting(key, 0))
+            self.set_setting(key, str(current + amount))
+            return current + amount
+
+    def get_global_stats(self):
+        total_files = int(self.get_setting("total_files", 0))
+        total_bytes = int(self.get_setting("total_bytes", 0))
+        return total_files, total_bytes
+
     def check_user(self, user_id, daily_limit):
         today = str(date.today())
         with self.conn:
